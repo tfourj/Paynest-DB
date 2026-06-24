@@ -2,6 +2,9 @@
 
 PocketBase database setup for Paynest.
 
+The Docker image builds from `ghcr.io/muchobien/pocketbase:latest`, copies in `pb_migrations/`,
+and runs migrations automatically before starting PocketBase.
+
 ## Requirements
 
 - Docker
@@ -21,7 +24,9 @@ Start PocketBase:
 docker compose up -d
 ```
 
-Migrations run automatically from `docker-entrypoint.sh` before PocketBase starts on every container restart.
+Migrations run automatically from the image entrypoint before PocketBase starts on every container restart.
+
+For Coolify, deploy this repository using the `Dockerfile` build pack and persist `/pb_data` as a volume.
 
 PocketBase will be available at:
 

@@ -1,0 +1,7 @@
+.env
+.git
+pb_data
+pb_data_backup
+*.db
+*.db-shm
+*.db-wal
