@@ -2,6 +2,7 @@ services:
   pocketbase:
     image: ghcr.io/muchobien/pocketbase:latest
     container_name: paynest-pocketbase
+    command: serve --http=0.0.0.0:8090 --dir=/pb_data --migrationsDir=/pb_migrations
     restart: unless-stopped
     ports:
       - "8090:8090"

@@ -27,6 +27,12 @@ Run migrations:
 docker compose exec pocketbase ./pocketbase migrate up
 ```
 
+If your container was created before this setup declared the migrations directory explicitly, run:
+
+```sh
+docker compose exec pocketbase ./pocketbase migrate up --migrationsDir=/pb_migrations
+```
+
 PocketBase will be available at:
 
 ```text
