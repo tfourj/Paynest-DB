@@ -21,17 +21,7 @@ Start PocketBase:
 docker compose up -d
 ```
 
-Run migrations:
-
-```sh
-docker compose exec pocketbase ./pocketbase migrate up
-```
-
-If your container was created before this setup declared the migrations directory explicitly, run:
-
-```sh
-docker compose exec pocketbase ./pocketbase migrate up --migrationsDir=/pb_migrations
-```
+Migrations run automatically from `docker-entrypoint.sh` before PocketBase starts on every container restart.
 
 PocketBase will be available at:
 
