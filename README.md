@@ -8,7 +8,8 @@ Docker Compose uses the project name `paynest-db` and runs two services:
 - `paynest-migrations`: a one-shot service that uses the same local image and
   runs migrations against the shared `pocketbase-data` volume, then exits.
 
-The image downloads PocketBase during build using the `PB_VERSION` Docker build argument.
+The image downloads PocketBase during build using the `PB_VERSION` Docker build argument
+and selects the matching release binary for `amd64`, `arm64`, or `arm/v7`.
 
 ## Requirements
 
