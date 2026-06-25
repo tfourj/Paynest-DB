@@ -1,7 +1,21 @@
 /// <reference path="../pb_data/types.d.ts" />
 
+const localIdIndex = "CREATE UNIQUE INDEX `idx_subscriptions_user_local_id` ON `subscriptions` (`user`, `local_id`)";
+
+const findSubscriptionsCollection = (app) => {
+  try {
+    return app.findCollectionByNameOrId("pbc_paynestsub");
+  } catch {
+    return app.findCollectionByNameOrId("subscriptions");
+  }
+};
+
+const hasLocalIdIndex = (collection) => (
+  collection.indexes.some((index) => index.includes("idx_subscriptions_user_local_id"))
+);
+
 migrate((app) => {
-  const collection = app.findCollectionByNameOrId("pbc_paynestsub");
+  const collection = findSubscriptionsCollection(app);
 
   collection.fields.add(new TextField({
     autogeneratePattern: "",
@@ -18,14 +32,16 @@ migrate((app) => {
     type: "text",
   }));
 
-  collection.indexes = [
-    ...collection.indexes,
-    "CREATE UNIQUE INDEX `idx_subscriptions_user_local_id` ON `subscriptions` (`user`, `local_id`)",
-  ];
+  if (!hasLocalIdIndex(collection)) {
+    collection.indexes = [
+      ...collection.indexes,
+      localIdIndex,
+    ];
+  }
 
   app.save(collection);
 }, (app) => {
-  const collection = app.findCollectionByNameOrId("pbc_paynestsub");
+  const collection = findSubscriptionsCollection(app);
 
   collection.indexes = collection.indexes.filter((index) => (
     !index.includes("idx_subscriptions_user_local_id")

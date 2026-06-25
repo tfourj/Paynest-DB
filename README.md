@@ -53,3 +53,8 @@ http://localhost:8090/_/
 ## Data
 
 DB data is stored in the `pocketbase-data` Docker volume at `/pb/pb_data`.
+
+PocketBase tracks applied migration filenames in its internal `_migrations` table.
+If an older backup already contains the collections but not that migration history,
+the included migrations are restore-safe and will mark themselves as applied
+without recreating existing collections or indexes.

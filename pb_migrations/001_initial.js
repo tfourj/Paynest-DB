@@ -1,5 +1,23 @@
 /// <reference path="../pb_data/types.d.ts" />
 
+const collectionExists = (app, idOrName) => {
+  try {
+    app.findCollectionByNameOrId(idOrName);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const deleteCollectionIfExists = (app, idOrName) => {
+  try {
+    const collection = app.findCollectionByNameOrId(idOrName);
+    app.delete(collection);
+  } catch {
+    // Already absent.
+  }
+};
+
 migrate((app) => {
   const subscriptions = new Collection({
     id: "pbc_paynestsub",
@@ -492,12 +510,14 @@ migrate((app) => {
     system: false,
   });
 
-  app.save(subscriptions);
-  app.save(settings);
-}, (app) => {
-  const settings = app.findCollectionByNameOrId("pbc_paynestset");
-  app.delete(settings);
+  if (!collectionExists(app, "pbc_paynestsub") && !collectionExists(app, "subscriptions")) {
+    app.save(subscriptions);
+  }
 
-  const subscriptions = app.findCollectionByNameOrId("pbc_paynestsub");
-  app.delete(subscriptions);
+  if (!collectionExists(app, "pbc_paynestset") && !collectionExists(app, "settings")) {
+    app.save(settings);
+  }
+}, (app) => {
+  deleteCollectionIfExists(app, "pbc_paynestset");
+  deleteCollectionIfExists(app, "pbc_paynestsub");
 });
