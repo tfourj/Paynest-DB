@@ -6,10 +6,17 @@ services:
     container_name: paynest-migrations
     restart: "no"
     volumes:
-      - pocketbase-data:/app/pb_data
+      - pocketbase-data:/pb/pb_data
+    command:
+      - /pb/pocketbase
+      - migrate
+      - up
+      - --dir=/pb/pb_data
+      - --migrationsDir=/pb/pb_migrations
 
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:latest
+    build: .
+    image: paynest-pocketbase:latest
     container_name: paynest-pocketbase
     environment:
       - SERVICE_URL_POCKETBASE_8080
@@ -20,12 +27,8 @@ services:
     ports:
       - "${POCKETBASE_PORT:-8090}:8080"
     volumes:
-      - pocketbase-data:/app/pb_data
-      - pocketbase-hooks:/app/pb_hooks
-    command:
-      - serve
-      - --http=0.0.0.0:8080
-      - --dir=/app/pb_data
+      - pocketbase-data:/pb/pb_data
+      - pocketbase-hooks:/pb/pb_hooks
 
 volumes:
   pocketbase-data:

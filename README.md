@@ -4,9 +4,11 @@ PocketBase database setup for Paynest.
 
 Docker Compose uses the project name `paynest-db` and runs two services:
 
-- `pocketbase`: the normal `ghcr.io/coollabsio/pocketbase:latest` image.
-- `paynest-migrations`: a one-shot service that builds this repo, copies in `pb_migrations/`,
+- `pocketbase`: a local image built from the official PocketBase Dockerfile pattern.
+- `paynest-migrations`: a one-shot service that uses the same local image and
   runs migrations against the shared `pocketbase-data` volume, then exits.
+
+The image downloads PocketBase during build using the `PB_VERSION` Docker build argument.
 
 ## Requirements
 
@@ -49,4 +51,4 @@ http://localhost:8090/_/
 
 ## Data
 
-DB data is stored in the `pocketbase-data` Docker volume.
+DB data is stored in the `pocketbase-data` Docker volume at `/pb/pb_data`.

@@ -1,8 +1,16 @@
-FROM ghcr.io/coollabsio/pocketbase:latest
+FROM alpine:latest
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-COPY pb_migrations /pb_migrations
+ARG PB_VERSION=0.39.4
+
+RUN apk add --no-cache \
+    unzip \
+    ca-certificates
+
+ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
+RUN unzip /tmp/pb.zip -d /pb/
+
+COPY pb_migrations /pb/pb_migrations
 
 EXPOSE 8080
 
-ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
