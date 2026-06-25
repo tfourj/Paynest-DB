@@ -9,7 +9,7 @@ services:
       - pocketbase-data:/app/pb_data
 
   pocketbase:
-    image: ghcr.io/coollabsio/pocketbase:latest
+    image: ghcr.io/muchobien/pocketbase:latest
     container_name: paynest-pocketbase
     environment:
       - SERVICE_URL_POCKETBASE_8080
