@@ -1,9 +1,25 @@
+name: paynest-db
+
 services:
-  pocketbase:
+  paynest-migrations:
     build: .
-    container_name: paynest-pocketbase
-    restart: unless-stopped
-    ports:
-      - "8090:8090"
+    container_name: paynest-migrations
+    restart: "no"
     volumes:
       - ./pb_data:/pb_data
+
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: paynest-pocketbase
+    depends_on:
+      paynest-migrations:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    ports:
+      - "${POCKETBASE_PORT:-8090}:8090"
+    volumes:
+      - ./pb_data:/pb_data
+    command:
+      - serve
+      - --http=0.0.0.0:8090
+      - --dir=/pb_data
