@@ -1,8 +1,8 @@
-FROM ghcr.io/muchobien/pocketbase:latest
+FROM ghcr.io/coollabsio/pocketbase:latest
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 COPY pb_migrations /pb_migrations
 
-EXPOSE 8090
+EXPOSE 8080
 
 ENTRYPOINT ["/bin/sh", "/docker-entrypoint.sh"]
