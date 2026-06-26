@@ -74,10 +74,11 @@ Current migrations create the app collections used by Paynest:
 
 - `subscriptions`
 - `settings`
+- `user_keys`
 - `encrypted_subscriptions`
 - `encrypted_settings`
 
-When cloud encryption is enabled in the app, `encrypted_subscriptions` stores
-one encrypted payload per subscription and `encrypted_settings` stores one
-encrypted payload per user. API rules restrict each user to their own records
-with `user = @request.auth.id`.
+When cloud encryption is enabled in the app, `user_keys` stores the encrypted
+per-user master key, `encrypted_subscriptions` stores one encrypted payload per
+subscription, and `encrypted_settings` stores one encrypted payload per user.
+API rules restrict each user to their own records with `user = @request.auth.id`.
