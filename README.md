@@ -49,6 +49,9 @@ GitHub Actions publishes the Docker image to GitHub Container Registry on pushes
 ghcr.io/tfourj/paynest-db
 ```
 
+Branch and manual builds publish `:latest` and `:dev`. Version tag builds publish
+`:stable` and the matching git tag, such as `:v1.1.0`.
+
 PocketBase will be available at:
 
 ```text
