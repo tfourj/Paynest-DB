@@ -1,0 +1,19 @@
+name: paynest-db-local
+
+services:
+  pocketbase:
+    build: .
+    image: paynest-db-local:latest
+    container_name: paynest-pocketbase-local
+    environment:
+      - SERVICE_URL_POCKETBASE_8080
+    restart: unless-stopped
+    ports:
+      - "${POCKETBASE_PORT:-8090}:8080"
+    volumes:
+      - pocketbase-data:/pb/pb_data
+      - pocketbase-hooks:/pb/pb_hooks
+
+volumes:
+  pocketbase-data:
+  pocketbase-hooks:

@@ -2,14 +2,15 @@
 
 PocketBase database setup for Paynest.
 
-Docker Compose uses the project name `paynest-db` and runs two services:
+Docker Compose uses the project name `paynest-db` and runs one service:
 
-- `pocketbase`: a local image built from the official PocketBase Dockerfile pattern.
-- `paynest-migrations`: a one-shot service that uses the same local image and
-  runs migrations against the shared `pocketbase-data` volume, then exits.
+- `pocketbase`: the published Paynest PocketBase image.
 
-The image downloads PocketBase during build using the `PB_VERSION` Docker build argument
-and selects the matching release binary for `amd64`, `arm64`, or `arm/v7`.
+The image downloads PocketBase during build using the `PB_VERSION` Docker build
+argument and selects the matching release binary for `amd64`, `arm64`, or
+`arm/v7`. At startup, the image runs migrations first. If migrations succeed,
+it starts the PocketBase server. If migrations fail, the container exits before
+starting PocketBase.
 
 ## Requirements
 
@@ -30,13 +31,23 @@ Start PocketBase:
 docker compose up -d
 ```
 
-Migrations run automatically before PocketBase starts. To run migrations manually:
+Compose pulls `ghcr.io/tfourj/paynest-db:latest`. Migrations run automatically
+inside the container before PocketBase starts.
+
+To build the image from local files instead of pulling the published image, use:
 
 ```sh
-docker compose run --rm paynest-migrations
+docker compose -f local-compose.yml up -d --build
 ```
 
 For Coolify, deploy this repository with Docker Compose and persist the `pocketbase-data` volume.
+
+GitHub Actions publishes the Docker image to GitHub Container Registry on pushes to
+`main`, `master`, version tags, or manual workflow runs:
+
+```text
+ghcr.io/tfourj/paynest-db
+```
 
 PocketBase will be available at:
 

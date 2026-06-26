@@ -1,31 +1,12 @@
 name: paynest-db
 
 services:
-  paynest-migrations:
-    build: .
-    container_name: paynest-migrations
-    restart: "no"
-    volumes:
-      - pocketbase-data:/pb/pb_data
-    command:
-      - /pb/pocketbase
-      - migrate
-      - up
-      - --dir=/pb/pb_data
-      - --migrationsDir=/pb/pb_migrations
-
   pocketbase:
-    build: .
-    image: paynest-pocketbase:latest
+    image: ghcr.io/tfourj/paynest-db:latest
     container_name: paynest-pocketbase
-    environment:
-      - SERVICE_URL_POCKETBASE_8080
-    depends_on:
-      paynest-migrations:
-        condition: service_completed_successfully
     restart: unless-stopped
     ports:
-      - "${POCKETBASE_PORT:-8090}:8080"
+      - "${POCKETBASE_PORT:-8080}:8080"
     volumes:
       - pocketbase-data:/pb/pb_data
       - pocketbase-hooks:/pb/pb_hooks

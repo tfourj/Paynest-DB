@@ -26,7 +26,10 @@ RUN set -eux; \
     rm /tmp/pb.zip
 
 COPY pb_migrations /pb/pb_migrations
+COPY docker-entrypoint.sh /pb/docker-entrypoint.sh
+
+RUN chmod +x /pb/docker-entrypoint.sh
 
 EXPOSE 8080
 
-CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080", "--dir=/pb/pb_data", "--migrationsDir=/pb/pb_migrations"]
+ENTRYPOINT ["/pb/docker-entrypoint.sh"]
