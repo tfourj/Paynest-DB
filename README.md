@@ -8,9 +8,9 @@ Docker Compose uses the project name `paynest-db` and runs one service:
 
 The image downloads PocketBase during build using the `PB_VERSION` Docker build
 argument and selects the matching release binary for `amd64`, `arm64`, or
-`arm/v7`. At startup, the image runs migrations first. If migrations succeed,
-it starts the PocketBase server. If migrations fail, the container exits before
-starting PocketBase.
+`arm/v7`. At startup, the image runs the database migration first. If migration
+succeeds, it starts the PocketBase server. If migration fails, the container
+exits before starting PocketBase.
 
 ## Requirements
 
@@ -65,12 +65,30 @@ http://localhost:8090/_/
 
 DB data is stored in the `pocketbase-data` Docker volume at `/pb/pb_data`.
 
-PocketBase tracks applied migration filenames in its internal `_migrations` table.
-If an older backup already contains the collections but not that migration history,
-the included migrations are restore-safe and will mark themselves as applied
-without recreating existing collections or indexes.
+Fresh installs start with an empty database and run the migration on first
+startup. No users, subscriptions, settings, or encrypted records are included in
+the image or repository.
 
-Current migrations create the app collections used by Paynest:
+To reset a local Docker Compose database back to that initial empty state:
+
+```sh
+docker compose down -v
+docker compose up -d
+```
+
+If you started the local build compose file instead, use:
+
+```sh
+docker compose -f local-compose.yml down -v
+docker compose -f local-compose.yml up -d --build
+```
+
+These commands delete the local `pocketbase-data` volume. Back up anything you
+need before running them.
+
+PocketBase tracks applied migration filenames in its internal `_migrations` table.
+
+The initial migration creates the app collections used by Paynest:
 
 - `subscriptions`
 - `settings`

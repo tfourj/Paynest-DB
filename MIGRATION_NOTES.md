@@ -1,15 +1,27 @@
 # Database Migrations
 
-PocketBase records applied migration filenames in the `_migrations` table. After a migration
-is marked applied, PocketBase will not run that same file again.
+Paynest alpha starts from a squashed initial PocketBase migration:
 
-## Rules
+```text
+pb_migrations/001_initial.js
+```
 
-- Do not edit old migrations after they may have been applied.
-- Add a new migration for every schema change.
+That migration creates the complete schema required by the app:
+
+- `subscriptions`
+- `settings`
+- `user_keys`
+- `encrypted_subscriptions`
+- `encrypted_settings`
+
+## Rules After Alpha
+
+- Do not edit `001_initial.js` after the alpha image has been published and used.
+- Add a new ordered migration for every schema change.
 - If a migration was applied but did not change the schema correctly, add a repair migration
   with the next filename instead of editing the broken migration.
-- Keep fresh installs working by relying on the full ordered migration chain.
+- Keep fresh installs working by relying on the full ordered migration chain from
+  `001_initial.js` onward.
 - Make migrations idempotent when they may run against restored or manually changed databases.
 
 ## Field Checks
@@ -44,20 +56,3 @@ const hasField = (collection, name) => {
   return Boolean(field && field.name === name);
 };
 ```
-
-## What Happened
-
-`003_add_currency_settings.js` was marked applied, but the settings fields were still missing.
-The field-existence guard treated missing fields as existing, so the migration skipped adding:
-
-- `enabled_currencies`
-- `convert_to_primary_currency`
-- `show_original_currency`
-
-Because `003` was already applied, the fix had to be a new migration:
-
-```text
-004_fix_currency_settings_fields.js
-```
-
-That repair migration uses the stricter field check and adds the missing fields.
