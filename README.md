@@ -81,7 +81,3 @@ When cloud encryption is enabled in the app, `encrypted_subscriptions` stores
 one encrypted payload per subscription and `encrypted_settings` stores one
 encrypted payload per user. API rules restrict each user to their own records
 with `user = @request.auth.id`.
-
-Migration `007_add_encrypted_app_data.js` created the legacy
-`encrypted_app_data` collection. Current app versions read it only to migrate
-older encrypted sync data into the per-record encrypted collections.
