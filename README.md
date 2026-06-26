@@ -69,3 +69,13 @@ PocketBase tracks applied migration filenames in its internal `_migrations` tabl
 If an older backup already contains the collections but not that migration history,
 the included migrations are restore-safe and will mark themselves as applied
 without recreating existing collections or indexes.
+
+Current migrations create the app collections used by Paynest:
+
+- `subscriptions`
+- `settings`
+- `encrypted_app_data`
+
+`encrypted_app_data` stores one encrypted cloud payload per user when cloud
+encryption is enabled in the app. API rules restrict each user to their own
+records with `user = @request.auth.id`.
