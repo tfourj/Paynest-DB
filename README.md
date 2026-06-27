@@ -103,3 +103,22 @@ When cloud encryption is enabled in the app, `user_keys` stores the encrypted
 per-user master key, `encrypted_subscriptions` stores one encrypted payload per
 subscription, and `encrypted_settings` stores one encrypted payload per user.
 API rules restrict each user to their own records with `user = @request.auth.id`.
+
+## Rate Limits and Batch Sync
+
+Keep the PocketBase rate limiter enabled in production. Paynest uses the
+PocketBase batch API for multi-subscription imports and full sync operations so
+large uploads do not need one HTTP request per subscription.
+
+Configure these runtime settings from the PocketBase admin dashboard:
+
+- Enable batch requests in `Settings > Application > Batch`.
+- Use a `maxRequests` value of at least `50`; the app sends chunks of up to 25
+  record operations per batch request.
+- Keep a dedicated rate-limit rule for `/api/batch`, for example 3 requests per
+  1 second, and keep the broader `/api/`, auth, and create limits active.
+- Use small practical batch timeout and body-size limits for your deployment.
+
+If PocketBase is behind Coolify, NGINX, Caddy, or another reverse proxy, also set
+PocketBase's trusted proxy IP headers in `Settings > Application` so rate limits
+use the real client IP. Common headers are `X-Real-IP` and `X-Forwarded-For`.
