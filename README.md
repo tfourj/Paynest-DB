@@ -104,6 +104,10 @@ per-user master key, `encrypted_subscriptions` stores one encrypted payload per
 subscription, and `encrypted_settings` stores one encrypted payload per user.
 API rules restrict each user to their own records with `user = @request.auth.id`.
 
+Later migrations extend these collections. `002` adds a `payment_method` field to
+`subscriptions` and `categories` and `payment_methods` fields to `settings` for
+custom category and payment method lists.
+
 ## Rate Limits and Batch Sync
 
 Keep the PocketBase rate limiter enabled in production. Paynest uses the
